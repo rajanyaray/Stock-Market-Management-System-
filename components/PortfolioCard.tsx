@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,71 +10,77 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 interface PortfolioItem {
-  id: string
-  user_id: string
-  stock_id: string
-  quantity: number
-  symbol: string
-  name: string
-  current_price: number
-  total_value: number
-  created_at: string
+  id: string;
+  user_id: string;
+  stock_id: string;
+  quantity: number;
+  symbol: string;
+  name: string;
+  current_price: number;
+  total_value: number;
+  created_at: string;
 }
 
 interface PortfolioCardProps {
-  item: PortfolioItem
-  onSell: () => void
+  item: PortfolioItem;
+  onSell: () => void;
 }
 
 export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [quantity, setQuantity] = useState('1')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const [quantity, setQuantity] = useState("1");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const currentValue = item.quantity * item.current_price
+  const currentValue = item.quantity * item.current_price;
 
   const handleSell = async () => {
-    if (!quantity || parseInt(quantity) <= 0) {
-      alert('Please enter a valid quantity')
-      return
+    const parsedQuantity = Number(quantity);
+    if (
+      !Number.isFinite(parsedQuantity) ||
+      !Number.isInteger(parsedQuantity) ||
+      parsedQuantity <= 0
+    ) {
+      toast.error("Enter a valid whole number quantity");
+      return;
     }
 
-    if (parseInt(quantity) > item.quantity) {
-      alert('Cannot sell more than you own')
-      return
+    if (parsedQuantity > item.quantity) {
+      toast.error("Cannot sell more than you own");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const res = await fetch('/api/stocks/sell', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/stocks/sell", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           stockId: item.stock_id,
           quantity: parseInt(quantity),
           pricePerShare: item.current_price,
         }),
-      })
+      });
 
       if (res.ok) {
-        alert('Stock sold successfully!')
-        setIsOpen(false)
-        setQuantity('1')
-        onSell()
+        toast.success("Stock sold successfully");
+        setIsOpen(false);
+        setQuantity("1");
+        onSell();
       } else {
-        const error = await res.json()
-        alert(error.error || 'Failed to sell stock')
+        const error = await res.json();
+        toast.error(error.error || "Failed to sell stock");
       }
     } catch (error) {
-      alert('Error selling stock')
+      toast.error("Error selling stock");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="p-6">
@@ -90,12 +96,16 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Current Price</span>
-          <span className="font-medium text-foreground">₹{item.current_price.toFixed(2)}</span>
+          <span className="font-medium text-foreground">
+            ₹{item.current_price.toFixed(2)}
+          </span>
         </div>
         <div className="border-t border-border pt-2">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Current Value</span>
-            <span className="font-bold text-foreground">₹{currentValue.toFixed(2)}</span>
+            <span className="font-bold text-foreground">
+              ₹{currentValue.toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
@@ -121,6 +131,8 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
               <Input
                 type="number"
                 min="1"
+                step="1"
+                inputMode="numeric"
                 max={item.quantity}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
@@ -130,7 +142,9 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
             <div className="rounded bg-secondary p-3 text-sm">
               <div className="flex justify-between">
                 <span>Total Sale Amount:</span>
-                <span className="font-bold">₹{(parseInt(quantity || '0') * item.current_price).toFixed(2)}</span>
+                <span className="font-bold">
+                  ₹{(Number(quantity || 0) * item.current_price).toFixed(2)}
+                </span>
               </div>
             </div>
             <Button
@@ -138,11 +152,11 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
               disabled={isLoading}
               className="w-full"
             >
-              {isLoading ? 'Selling...' : 'Confirm Sell'}
+              {isLoading ? "Selling..." : "Confirm Sell"}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
     </Card>
-  )
+  );
 }

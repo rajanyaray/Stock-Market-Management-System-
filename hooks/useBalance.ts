@@ -9,8 +9,14 @@ export function useBalance() {
     { revalidateOnFocus: false }
   )
 
+  const balanceValue = typeof data?.balance === 'string'
+    ? Number.parseFloat(data.balance)
+    : typeof data?.balance === 'number'
+      ? data.balance
+      : 0
+
   return {
-    balance: data?.balance || 0,
+    balance: Number.isFinite(balanceValue) ? balanceValue : 0,
     isLoading,
     error,
     mutate,

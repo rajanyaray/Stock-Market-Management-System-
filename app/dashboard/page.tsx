@@ -61,7 +61,12 @@ export default function DashboardPage() {
         const res = await fetch('/api/portfolio')
         if (res.ok) {
           const data = await res.json()
-          setPortfolio(data)
+          const normalized = (data || []).map((item: PortfolioItem) => ({
+            ...item,
+            current_price: Number.parseFloat(String(item.current_price)),
+            total_value: Number.parseFloat(String(item.total_value ?? 0)),
+          }))
+          setPortfolio(normalized)
         }
       } catch (error) {
         console.error('Failed to fetch portfolio:', error)
@@ -101,98 +106,6 @@ export default function DashboardPage() {
           </Card>
           <Card className="p-6">
             <p className="text-sm text-muted-foreground">Portfolio Value</p>
-            <p className="text-2xl font-bold text-foreground">₹{portfolioValue.toFixed(2)}</p>
-          </Card>
-          <Card className="p-6">
-            <p className="text-sm text-muted-foreground">Total Value</p>
-            <p className="text-2xl font-bold text-primary">₹{totalValue.toFixed(2)}</p>
-          </Card>
-        </div>
-
-        {/* Tabs */}
-        <div className="mb-6 flex gap-2 border-b border-border">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'overview'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Portfolio
-          </button>
-          <button
-            onClick={() => setActiveTab('stocks')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'stocks'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Browse Stocks
-          </button>
-          <button
-            onClick={() => setActiveTab('transactions')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'transactions'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Transactions
-          </button>
-        </div>
-
-        {/* Content */}
-        {activeTab === 'overview' && (
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-foreground">Your Portfolio</h2>
-            {portfolio.length === 0 ? (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">No stocks in your portfolio yet.</p>
-                <Button onClick={() => setActiveTab('stocks')} className="mt-4">
-                  Browse Stocks
-                </Button>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {portfolio.map((item) => (
-                  <PortfolioCard
-                    key={item.id}
-                    item={item}
-                    onSell={() => {
-                      mutateBalance()
-                      setPortfolio(portfolio.filter((p) => p.id !== item.id))
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'stocks' && (
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-foreground">Available Stocks</h2>
-            <StockBrowser
-              balance={balance}
-              onBuy={() => {
-                mutateBalance()
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'transactions' && (
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-foreground">Transaction History</h2>
-            <Link href="/transactions">
-              <Button>View Full History</Button>
-            </Link>
-          </div>
-        )}
-      </div>
-    </main>
             <p className="text-2xl font-bold text-foreground">₹{portfolioValue.toFixed(2)}</p>
           </Card>
           <Card className="p-6">

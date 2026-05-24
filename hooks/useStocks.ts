@@ -19,7 +19,13 @@ export function useStocks() {
   )
 
   return {
-    stocks: data || [],
+    stocks: (data || []).map((stock) => {
+      const price = Number.parseFloat(String(stock.current_price))
+      return {
+        ...stock,
+        current_price: Number.isFinite(price) ? price : 0,
+      }
+    }),
     isLoading,
     error,
     mutate,

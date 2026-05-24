@@ -20,11 +20,11 @@ export async function GET() {
         t.stock_id,
         t.type,
         t.quantity,
-        t.price,
+        t.price::float AS price,
         t.created_at,
         s.symbol,
         s.name,
-        s.current_price
+        s.current_price::float AS current_price
       FROM transactions t
       JOIN stocks s ON t.stock_id = s.id
       WHERE t.user_id = $1

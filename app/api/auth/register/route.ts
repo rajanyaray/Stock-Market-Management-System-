@@ -5,17 +5,33 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const { email, password, name } = await request.json()
+    const normalizedEmail = String(email || '').trim().toLowerCase()
+    const normalizedName = String(name || '').trim()
 
     // Validation
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
       )
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return NextResponse.json(
+        { error: 'Invalid email address' },
+        { status: 400 }
+      )
+    }
+
+    if (String(password).length < 6) {
+      return NextResponse.json(
+        { error: 'Password must be at least 6 characters' },
+        { status: 400 }
+      )
+    }
+
     // Check if user already exists
-    const existingUser = await query('SELECT id FROM users WHERE email = $1', [email])
+    const existingUser = await query('SELECT id FROM users WHERE email = $1', [normalizedEmail])
     if (existingUser.rows.length > 0) {
       return NextResponse.json(
         { error: 'Email already registered' },
@@ -29,7 +45,7 @@ export async function POST(request: Request) {
     // Create user
     const result = await query(
       'INSERT INTO users (email, password, name, balance) VALUES ($1, $2, $3, $4) RETURNING id',
-      [email, hashedPassword, name || 'User', 100000]
+      [normalizedEmail, hashedPassword, normalizedName || 'User', 100000]
     )
 
     const userId = result.rows[0].id

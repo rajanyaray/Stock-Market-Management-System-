@@ -21,8 +21,8 @@ export async function GET() {
         p.quantity,
         s.symbol,
         s.name,
-        s.current_price,
-        (p.quantity * s.current_price) as total_value,
+        s.current_price::float AS current_price,
+        (p.quantity * s.current_price)::float as total_value,
         p.created_at
       FROM portfolio p
       JOIN stocks s ON p.stock_id = s.id

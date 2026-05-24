@@ -1,3 +1,5 @@
+'use server'
+
 import { jwtVerify, SignJWT } from 'jose'
 import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'

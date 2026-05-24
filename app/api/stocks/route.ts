@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const result = await query(
-      'SELECT id, symbol, name, current_price, created_at FROM stocks ORDER BY name ASC'
+      'SELECT id, symbol, name, current_price::float AS current_price, created_at FROM stocks ORDER BY name ASC'
     )
 
     return NextResponse.json(result.rows)

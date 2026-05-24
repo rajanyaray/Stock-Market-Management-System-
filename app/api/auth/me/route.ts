@@ -15,7 +15,7 @@ export async function GET() {
 
     // Get user data
     const result = await query(
-      'SELECT id, email, name, balance FROM users WHERE id = $1',
+      'SELECT id, email, name, balance::float AS balance FROM users WHERE id = $1',
       [parseInt(user.userId)]
     )
 

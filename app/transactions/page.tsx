@@ -39,6 +39,8 @@ export default function TransactionsPage() {
       } catch (error) {
         console.error('Auth check failed:', error)
         router.push('/auth/login')
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -135,48 +137,6 @@ export default function TransactionsPage() {
                         isBuy ? 'text-red-600' : 'text-green-600'
                       }`}>
                         {isBuy ? '-' : '+'}₹{totalAmount.toFixed(2)}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </main>
-              <tbody>
-                {transactions.map((transaction) => {
-                  const date = new Date(transaction.created_at)
-                  const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                  const isBuy = transaction.type === 'BUY'
-
-                  return (
-                    <tr key={transaction.id} className="border-b border-border hover:bg-secondary">
-                      <td className="px-4 py-3 text-foreground">{formattedDate}</td>
-                      <td className="px-4 py-3">
-                        <div>
-                          <p className="font-medium text-foreground">{transaction.stocks.symbol}</p>
-                          <p className="text-xs text-muted-foreground">{transaction.stocks.name}</p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block rounded px-2 py-1 text-xs font-medium ${
-                          isBuy ? 'bg-blue-500 bg-opacity-10 text-blue-700' : 'bg-green-500 bg-opacity-10 text-green-700'
-                        }`}>
-                          {transaction.type}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-medium text-foreground">
-                        {transaction.quantity}
-                      </td>
-                      <td className="px-4 py-3 text-right text-foreground">
-                        ₹{transaction.price_per_share.toFixed(2)}
-                      </td>
-                      <td className={`px-4 py-3 text-right font-bold ${
-                        isBuy ? 'text-red-600' : 'text-green-600'
-                      }`}>
-                        {isBuy ? '-' : '+'}₹{transaction.total_amount.toFixed(2)}
                       </td>
                     </tr>
                   )

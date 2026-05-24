@@ -14,16 +14,19 @@ export async function POST(request: Request) {
     }
 
     const { stockId, quantity, pricePerShare } = await request.json()
+    const parsedStockId = Number.parseInt(String(stockId), 10)
+    const parsedQuantity = Number.parseInt(String(quantity), 10)
+    const parsedPricePerShare = Number.parseFloat(String(pricePerShare))
 
     // Validation
-    if (!stockId || !quantity || !pricePerShare) {
+    if (!parsedStockId || !parsedQuantity || !parsedPricePerShare) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    if (quantity <= 0 || pricePerShare <= 0) {
+    if (!Number.isInteger(parsedStockId) || !Number.isInteger(parsedQuantity) || parsedQuantity <= 0 || parsedPricePerShare <= 0 || !Number.isFinite(parsedPricePerShare)) {
       return NextResponse.json(
         { error: 'Invalid quantity or price' },
         { status: 400 }
@@ -31,7 +34,20 @@ export async function POST(request: Request) {
     }
 
     const userId = parseInt(user.userId)
-    const totalAmount = quantity * pricePerShare
+    const stockResult = await query(
+      'SELECT current_price::float AS current_price FROM stocks WHERE id = $1',
+      [parsedStockId]
+    )
+
+    if (stockResult.rows.length === 0) {
+      return NextResponse.json(
+        { error: 'Stock not found' },
+        { status: 404 }
+      )
+    }
+
+    const currentPrice = Number.parseFloat(String(stockResult.rows[0].current_price))
+    const totalAmount = parsedQuantity * currentPrice
 
     // Get current balance
     const balanceResult = await query(
@@ -46,7 +62,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const currentBalance = balanceResult.rows[0].balance
+    const currentBalance = Number.parseFloat(String(balanceResult.rows[0].balance))
 
     if (currentBalance < totalAmount) {
       return NextResponse.json(
@@ -58,30 +74,30 @@ export async function POST(request: Request) {
     // Get existing portfolio entry
     const portfolioResult = await query(
       'SELECT quantity FROM portfolio WHERE user_id = $1 AND stock_id = $2',
-      [userId, stockId]
+      [userId, parsedStockId]
     )
 
-    let newQuantity = quantity
+    let newQuantity = parsedQuantity
 
     if (portfolioResult.rows.length > 0) {
       // Update existing portfolio entry
-      newQuantity = portfolioResult.rows[0].quantity + quantity
+      newQuantity = portfolioResult.rows[0].quantity + parsedQuantity
       await query(
         'UPDATE portfolio SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND stock_id = $3',
-        [newQuantity, userId, stockId]
+        [newQuantity, userId, parsedStockId]
       )
     } else {
       // Create new portfolio entry
       await query(
         'INSERT INTO portfolio (user_id, stock_id, quantity) VALUES ($1, $2, $3)',
-        [userId, stockId, quantity]
+        [userId, parsedStockId, parsedQuantity]
       )
     }
 
     // Create transaction record
     await query(
       'INSERT INTO transactions (user_id, stock_id, type, quantity, price) VALUES ($1, $2, $3, $4, $5)',
-      [userId, stockId, 'BUY', quantity, pricePerShare]
+      [userId, parsedStockId, 'BUY', parsedQuantity, currentPrice]
     )
 
     // Update balance
@@ -93,7 +109,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Bought ${quantity} shares at ₹${pricePerShare}`,
+      message: `Bought ${parsedQuantity} shares at ₹${currentPrice}`,
       newBalance,
     })
   } catch (error) {

@@ -5,8 +5,9 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json()
+    const normalizedEmail = String(email || '').trim().toLowerCase()
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
     }
 
     // Find user
-    const result = await query('SELECT id, password FROM users WHERE email = $1', [email])
+    const result = await query('SELECT id, password FROM users WHERE email = $1', [normalizedEmail])
 
     if (result.rows.length === 0) {
       return NextResponse.json(
