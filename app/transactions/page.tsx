@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import Navbar from '@/components/Navbar'
+import RadarLoader from '@/components/RadarLoader'
 
 interface Transaction {
   id: string
@@ -68,13 +69,7 @@ export default function TransactionsPage() {
   }, [user])
 
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        </div>
-      </main>
-    )
+    return <RadarLoader />
   }
 
   return (

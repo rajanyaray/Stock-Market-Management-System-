@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
+import RadarLoader from '@/components/RadarLoader'
 
 export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -28,13 +29,7 @@ export default function HomePage() {
   }, [])
 
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        </div>
-      </main>
-    )
+    return <RadarLoader />
   }
 
   if (isAuthenticated) {
@@ -63,7 +58,9 @@ export default function HomePage() {
       <div className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground">Welcome to Stock Market Manager</h2>
+            <h2 className="text-3xl font-bold text-foreground">
+              Welcome to <span className="tradezy-logo font-extrabold px-1">Tradezy</span>
+            </h2>
             <p className="mt-4 text-muted-foreground">
               Start trading Indian stocks with a virtual portfolio of ₹100,000. Buy, sell, and track your investments.
             </p>

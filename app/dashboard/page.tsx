@@ -10,6 +10,7 @@ import { useStocks } from '@/hooks/useStocks'
 import PortfolioCard from '@/components/PortfolioCard'
 import StockBrowser from '@/components/StockBrowser'
 import Navbar from '@/components/Navbar'
+import RadarLoader from '@/components/RadarLoader'
 
 interface PortfolioItem {
   id: string
@@ -84,13 +85,7 @@ export default function DashboardPage() {
   const totalValue = balance + portfolioValue
 
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        </div>
-      </main>
-    )
+    return <RadarLoader />
   }
 
   return (
@@ -100,49 +95,45 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header Stats */}
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Card className="p-6">
+          {/* Cash Balance — ripple glow effect */}
+          <div className="stat-card stat-card-cash bg-card border border-border">
+            <span className="stat-icon">💰</span>
             <p className="text-sm text-muted-foreground">Cash Balance</p>
-            <p className="text-2xl font-bold text-foreground">₹{balance.toFixed(2)}</p>
-          </Card>
-          <Card className="p-6">
+            <p className="text-2xl font-bold text-foreground mt-1">₹{balance.toFixed(2)}</p>
+          </div>
+
+          {/* Portfolio Value — spinning conic border */}
+          <div className="stat-card stat-card-portfolio border border-border">
+            <span className="stat-icon">📈</span>
             <p className="text-sm text-muted-foreground">Portfolio Value</p>
-            <p className="text-2xl font-bold text-foreground">₹{portfolioValue.toFixed(2)}</p>
-          </Card>
-          <Card className="p-6">
+            <p className="text-2xl font-bold text-foreground mt-1">₹{portfolioValue.toFixed(2)}</p>
+          </div>
+
+          {/* Total Value — shimmer sweep + glow text */}
+          <div className="stat-card stat-card-total bg-card border border-border">
+            <span className="stat-icon">✦</span>
             <p className="text-sm text-muted-foreground">Total Value</p>
-            <p className="text-2xl font-bold text-primary">₹{totalValue.toFixed(2)}</p>
-          </Card>
+            <p className="stat-value-total text-2xl font-bold text-primary mt-1">₹{totalValue.toFixed(2)}</p>
+          </div>
         </div>
 
         {/* Tabs */}
         <div className="mb-6 flex gap-2 border-b border-border">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'overview'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`dashboard-tab ${activeTab === 'overview' ? 'active' : ''}`}
           >
             Portfolio
           </button>
           <button
             onClick={() => setActiveTab('stocks')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'stocks'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`dashboard-tab ${activeTab === 'stocks' ? 'active' : ''}`}
           >
             Browse Stocks
           </button>
           <button
             onClick={() => setActiveTab('transactions')}
-            className={`px-4 py-2 font-medium ${
-              activeTab === 'transactions'
-                ? 'border-b-2 border-primary text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className={`dashboard-tab ${activeTab === 'transactions' ? 'active' : ''}`}
           >
             Transactions
           </button>

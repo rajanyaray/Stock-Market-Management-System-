@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const _geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-const _geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "Stock Market Manager",
+  title: "Tradezy",
   description: "Manage and trade Indian stocks",
   generator: "v0.app",
   icons: {
@@ -39,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background" suppressHydrationWarning>
       <body
-        className={`${_geist.variable} ${_geistMono.variable} font-sans antialiased`}
+        className="font-sans antialiased"
       >
         <ThemeProvider
           attribute="class"

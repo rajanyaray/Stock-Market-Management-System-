@@ -33,25 +33,21 @@ export default function Navbar({ userEmail, showLinks = false }: NavbarProps) {
     <nav className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href={userEmail ? "/dashboard" : "/"}>
-          <h1 className="text-xl font-bold text-foreground hover:text-primary transition-colors">
-            Stock Market Manager
-          </h1>
+          <span className="tradezy-logo text-2xl font-extrabold tracking-wider">
+            Tradezy
+          </span>
         </Link>
 
         <div className="flex items-center gap-4">
           {showLinks && userEmail && (
-            <>
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm">
-                  Dashboard
-                </Button>
+            <div className="flex gap-1">
+              <Link href="/dashboard" className="nav-link text-sm">
+                Dashboard
               </Link>
-              <Link href="/transactions">
-                <Button variant="ghost" size="sm">
-                  Transactions
-                </Button>
+              <Link href="/transactions" className="nav-link text-sm">
+                Transactions
               </Link>
-            </>
+            </div>
           )}
           {showLinks && userEmail && (
             <>

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -83,38 +81,40 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
   };
 
   return (
-    <Card className="p-6">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-foreground">{item.symbol}</h3>
-        <p className="text-sm text-muted-foreground">{item.name}</p>
-      </div>
-
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Quantity</span>
-          <span className="font-medium text-foreground">{item.quantity}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Current Price</span>
-          <span className="font-medium text-foreground">
-            ₹{item.current_price.toFixed(2)}
-          </span>
-        </div>
-        <div className="border-t border-border pt-2">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Current Value</span>
-            <span className="font-bold text-foreground">
-              ₹{currentValue.toFixed(2)}
-            </span>
-          </div>
+    <div className="portfolio-card">
+      {/* Header row */}
+      <div className="flex items-start gap-3 mb-4">
+        <span className="stock-symbol">{item.symbol.slice(0, 4)}</span>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-bold text-foreground leading-tight">
+            {item.symbol}
+          </h3>
+          <p className="text-xs text-muted-foreground truncate mt-0.5">
+            {item.name}
+          </p>
         </div>
       </div>
 
+      {/* Data rows */}
+      <div className="space-y-0 mb-4">
+        <div className="data-row">
+          <span className="data-label">Quantity</span>
+          <span className="data-value">{item.quantity}</span>
+        </div>
+        <div className="data-row">
+          <span className="data-label">Price / Share</span>
+          <span className="data-value">₹{item.current_price.toFixed(2)}</span>
+        </div>
+        <div className="data-row">
+          <span className="data-label">Current Value</span>
+          <span className="data-value highlight">₹{currentValue.toFixed(2)}</span>
+        </div>
+      </div>
+
+      {/* Sell dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button className="mt-4 w-full" variant="outline">
-            Sell
-          </Button>
+          <button className="sell-btn">Sell</button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -139,7 +139,7 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
                 className="mt-1"
               />
             </div>
-            <div className="rounded bg-secondary p-3 text-sm">
+            <div className="rounded-lg bg-secondary p-3 text-sm">
               <div className="flex justify-between">
                 <span>Total Sale Amount:</span>
                 <span className="font-bold">
@@ -147,16 +147,16 @@ export default function PortfolioCard({ item, onSell }: PortfolioCardProps) {
                 </span>
               </div>
             </div>
-            <Button
+            <button
               onClick={handleSell}
               disabled={isLoading}
-              className="w-full"
+              className="sell-btn"
             >
               {isLoading ? "Selling..." : "Confirm Sell"}
-            </Button>
+            </button>
           </div>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   );
 }
