@@ -1012,3 +1012,94 @@
     0 4px 0 #065f46,
     0 6px 12px rgba(16, 185, 129, 0.2);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Transaction Type Button (Uiverse dull-ladybug-18)
+   ══════════════════════════════════════════════════════════════ */
+.transaction-type-btn {
+  width: 90px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: none;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  cursor: default;
+}
+
+.transaction-type-btn .text {
+  width: 65%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  transition: background-color 0.3s ease;
+}
+
+.transaction-type-btn .svgIcon {
+  width: 35%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+/* Buy variants - Green */
+.transaction-type-btn.buy .text {
+  background-color: #10b981;
+}
+.transaction-type-btn.buy .svgIcon {
+  background-color: #059669;
+}
+.transaction-type-btn.buy:hover .text {
+  background-color: #059669;
+}
+.transaction-type-btn.buy:hover .svgIcon {
+  background-color: #047857;
+}
+
+/* Sell variants - Red */
+.transaction-type-btn.sell .text {
+  background-color: #ef4444;
+}
+.transaction-type-btn.sell .svgIcon {
+  background-color: #dc2626;
+}
+.transaction-type-btn.sell:hover .text {
+  background-color: #dc2626;
+}
+.transaction-type-btn.sell:hover .svgIcon {
+  background-color: #b91c1c;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Transaction History Page Effects
+   ══════════════════════════════════════════════════════════════ */
+.transactions-container {
+  animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.transactions-table-row {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.transactions-table-row:hover {
+  transform: scale(1.01) translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  background-color: var(--secondary) !important;
+  border-radius: 8px;
+  z-index: 10;
+  position: relative;
+}

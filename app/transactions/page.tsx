@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import Navbar from '@/components/Navbar'
 import RadarLoader from '@/components/RadarLoader'
+import { ShoppingCart, Tag } from 'lucide-react'
 
 interface Transaction {
   id: string
@@ -87,7 +88,7 @@ export default function TransactionsPage() {
             </Link>
           </Card>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto transactions-container">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
@@ -107,7 +108,7 @@ export default function TransactionsPage() {
                   const totalAmount = transaction.quantity * transaction.price
 
                   return (
-                    <tr key={transaction.id} className="border-b border-border hover:bg-secondary">
+                    <tr key={transaction.id} className="border-b border-border transactions-table-row">
                       <td className="px-4 py-3 text-foreground">{formattedDate}</td>
                       <td className="px-4 py-3">
                         <div>
@@ -116,11 +117,12 @@ export default function TransactionsPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-block rounded px-2 py-1 text-xs font-medium ${
-                          isBuy ? 'bg-blue-500 bg-opacity-10 text-blue-700' : 'bg-green-500 bg-opacity-10 text-green-700'
-                        }`}>
-                          {transaction.type}
-                        </span>
+                        <div className={`transaction-type-btn ${isBuy ? 'buy' : 'sell'}`}>
+                          <div className="text">{transaction.type}</div>
+                          <div className="svgIcon">
+                            {isBuy ? <ShoppingCart size={14} /> : <Tag size={14} />}
+                          </div>
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-foreground">
                         {transaction.quantity}
