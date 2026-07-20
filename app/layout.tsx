@@ -6,7 +6,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "TradeGo",
+  title: "TradEzy",
   description: "Manage and trade Indian stocks",
   generator: "v0.app",
   icons: {

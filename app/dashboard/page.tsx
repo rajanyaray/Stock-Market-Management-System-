@@ -7,28 +7,17 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useBalance } from '@/hooks/useBalance'
 import { useStocks } from '@/hooks/useStocks'
+import { usePortfolio } from '@/hooks/usePortfolio'
 import PortfolioCard from '@/components/PortfolioCard'
 import StockBrowser from '@/components/StockBrowser'
 import Navbar from '@/components/Navbar'
 import RadarLoader from '@/components/RadarLoader'
 
-interface PortfolioItem {
-  id: string
-  user_id: string
-  stock_id: string
-  quantity: number
-  symbol: string
-  name: string
-  current_price: number
-  total_value: number
-  created_at: string
-}
-
 export default function DashboardPage() {
   const router = useRouter()
   const { balance, mutate: mutateBalance } = useBalance()
   const { stocks } = useStocks()
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([])
+  const { portfolio, mutate: mutatePortfolio } = usePortfolio()
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [activeTab, setActiveTab] = useState<'overview' | 'stocks' | 'transactions'>('overview')
@@ -54,35 +43,22 @@ export default function DashboardPage() {
     checkAuth()
   }, [router])
 
-  useEffect(() => {
-    if (!user) return
-
-    const fetchPortfolio = async () => {
-      try {
-        const res = await fetch('/api/portfolio')
-        if (res.ok) {
-          const data = await res.json()
-          const normalized = (data || []).map((item: PortfolioItem) => ({
-            ...item,
-            current_price: Number.parseFloat(String(item.current_price)),
-            total_value: Number.parseFloat(String(item.total_value ?? 0)),
-          }))
-          setPortfolio(normalized)
-        }
-      } catch (error) {
-        console.error('Failed to fetch portfolio:', error)
-      }
-    }
-
-    fetchPortfolio()
-  }, [user])
-
   const portfolioValue = portfolio.reduce(
     (total, item) => total + (item.total_value || item.quantity * item.current_price),
     0
   )
 
   const totalValue = balance + portfolioValue
+
+  const handleAfterBuy = () => {
+    mutateBalance()
+    mutatePortfolio()
+  }
+
+  const handleAfterSell = () => {
+    mutateBalance()
+    mutatePortfolio()
+  }
 
   if (isLoading) {
     return <RadarLoader />
@@ -156,10 +132,7 @@ export default function DashboardPage() {
                   <PortfolioCard
                     key={item.id}
                     item={item}
-                    onSell={() => {
-                      mutateBalance()
-                      setPortfolio(portfolio.filter((p) => p.id !== item.id))
-                    }}
+                    onSell={handleAfterSell}
                   />
                 ))}
               </div>
@@ -172,9 +145,7 @@ export default function DashboardPage() {
             <h2 className="mb-4 text-2xl font-bold text-foreground">Available Stocks</h2>
             <StockBrowser
               balance={balance}
-              onBuy={() => {
-                mutateBalance()
-              }}
+              onBuy={handleAfterBuy}
             />
           </div>
         )}

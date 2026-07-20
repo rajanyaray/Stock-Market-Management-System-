@@ -33,8 +33,8 @@ export default function Navbar({ userEmail, showLinks = false }: NavbarProps) {
     <nav className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href={userEmail ? "/dashboard" : "/"}>
-          <span className="TradeGo-logo text-2xl font-extrabold tracking-wider">
-            TradeGo
+          <span className="TradEzy-logo text-2xl font-extrabold tracking-wider">
+            TradEzy
           </span>
         </Link>
 

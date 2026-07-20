@@ -59,7 +59,7 @@ export default function HomePage() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-foreground">
-              Welcome to <span className="TradeGo-logo font-extrabold px-1">TradeGo</span>
+              Welcome to <span className="TradEzy-logo font-extrabold px-1">TradEzy</span>
             </h2>
             <p className="mt-4 text-muted-foreground">
               Start trading Indian stocks with a virtual portfolio of ₹100,000. Buy, sell, and track your investments.

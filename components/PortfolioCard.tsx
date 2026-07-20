@@ -33,10 +33,9 @@ const SellButton = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttribute
   ({ children, className = "", ...props }, ref) => (
     <button
       ref={ref}
-      className={`w-full bg-gradient-to-r from-pink-950 to-pink-900 text-pink-400 border border-pink-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group ${className}`}
+      className={`sell-btn ${className}`}
       {...props}
     >
-      <span className="bg-gradient-to-r from-pink-400 to-pink-300 shadow-pink-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
       {children}
     </button>
   )
